@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql'
-import { GraphQLJSONObject } from 'graphql-type-json'
+import { CompanyDto } from 'src/company/dto'
+import { ContentTypeDto } from 'src/content-types/dto'
 
 @ObjectType()
 export class ProvisionDto {
@@ -9,20 +10,8 @@ export class ProvisionDto {
   @Field(() => String)
   title: string
 
-  @Field(() => String)
-  type: string
-
   @Field(() => String, { nullable: true })
   description?: string
-
-  @Field(() => String, { nullable: true })
-  cover?: string
-
-  @Field(() => String)
-  url: string
-
-  @Field(() => Date)
-  created_at: Date
 
   @Field(() => Boolean)
   allow_download: boolean
@@ -30,15 +19,42 @@ export class ProvisionDto {
   @Field(() => Boolean)
   is_embeddable: boolean
 
-  @Field(() => String, { nullable: true })
-  format?: string
-
-  @Field(() => Int)
+  @Field(() => Number)
   bytes: number
+
+  @Field(() => String)
+  format: string
+
+  @Field(() => String)
+  url: string
 
   @Field(() => Int)
   total_likes: number
 
-  @Field(() => GraphQLJSONObject)
-  metadata: object
+  @Field(() => String)
+  type: string
+
+  @Field(() => String, { nullable: true })
+  cover?: string
+
+  @Field(() => String)
+  company_id: string
+
+  @Field(() => String)
+  types_id: string
+
+  @Field(() => Date)
+  created_at: Date
+
+  @Field(() => Date, { nullable: true })
+  updated_at: Date | null
+
+  @Field(() => Date, { nullable: true })
+  deleted_at: Date | null
+
+  @Field(() => ContentTypeDto, { nullable: true })
+  content_types?: ContentTypeDto
+
+  @Field(() => CompanyDto, { nullable: true })
+  companies?: CompanyDto
 }

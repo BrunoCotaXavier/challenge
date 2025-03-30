@@ -26,7 +26,19 @@ export class Content {
   description?: string
 
   @Column()
+  allow_download: boolean
+
+  @Column()
+  is_embeddable: boolean
+
+  @Column()
+  bytes: number
+
+  @Column()
   url: string
+
+  @Column()
+  format: string
 
   @Column()
   cover?: string
@@ -47,7 +59,7 @@ export class Content {
   @JoinColumn({ name: 'company_id' })
   company: Company
 
-  @ManyToOne(() => ContentType, { nullable: false }) // Relacionamento com ContentType
-  @JoinColumn({ name: 'type_id' })
+  @ManyToOne(() => ContentType, (content) => content.contents)
+  @JoinColumn({ name: 'types_id' })
   contentType: ContentType
 }

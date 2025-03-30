@@ -10,6 +10,14 @@ export class CreateContentTypesTable1743287413839 implements MigrationInterface 
         updated_at TIMESTAMP DEFAULT NOW()
       )
     `)
+    await queryRunner.query(`
+      ALTER TABLE contents
+        ADD COLUMN types_id VARCHAR(255),
+        ADD COLUMN bytes INTEGER NOT NULL DEFAULT 0,
+        ADD COLUMN is_embeddable BOOLEAN DEFAULT FALSE,
+        ADD COLUMN allow_download BOOLEAN DEFAULT FALSE,
+        ADD COLUMN format VARCHAR(255)
+    `)
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

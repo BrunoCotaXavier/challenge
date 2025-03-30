@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+import * as path from 'path'
 import { DataSource } from 'typeorm'
 import { User } from 'src/user/entity'
 import { Company } from 'src/company/entity'
@@ -13,9 +13,45 @@ export const seedDatabase = async (dataSource: DataSource) => {
   const company1 = queryRunner.manager.create(Company, { name: 'Company A' })
   const company2 = queryRunner.manager.create(Company, { name: 'Company B' })
 
+  const contentPdf = queryRunner.manager.create(ContentType, {
+    id: '2b8fad37-ea14-4643-9580-58953c42a17a',
+    name: 'pdf',
+    pdf_author: 'Unknown',
+    pdf_pages: 1,
+    pdf_encrypted: false,
+  })
+
+  const contentImg = queryRunner.manager.create(ContentType, {
+    id: 'ce3c1bb5-4e00-4a3b-9039-a5bd90d224be',
+    name: 'image',
+    image_resolution: '1920x1080',
+    image_aspect_ratio: '16:9',
+  })
+
+  const contentVideo = queryRunner.manager.create(ContentType, {
+    id: '24e34bc0-8a17-4c69-aeeb-6a5095bd9fa0',
+    name: 'video',
+    video_duration: 10,
+    video_resolution: '1080p',
+  })
+
+  const contentLink = queryRunner.manager.create(ContentType, {
+    id: '1a110d76-4997-4412-a3dd-ab147ca76f3b',
+    name: 'link',
+    link_trusted: true,
+    link_redirects: 0,
+  })
+
   const [createdCompany1, createdCompany2] = await Promise.all([
     queryRunner.manager.save(company1),
     queryRunner.manager.save(company2),
+  ])
+
+  const [createdPdf, createdImg, createdVideo, createdLink] = await Promise.all([
+    queryRunner.manager.save(contentPdf),
+    queryRunner.manager.save(contentImg),
+    queryRunner.manager.save(contentVideo),
+    queryRunner.manager.save(contentLink),
   ])
 
   const user1 = queryRunner.manager.create(User, {
@@ -26,6 +62,7 @@ export const seedDatabase = async (dataSource: DataSource) => {
     password: 'hashed-password',
     company: createdCompany1,
   })
+
   const user2 = queryRunner.manager.create(User, {
     name: 'Foo Bar',
     email: 'foo@example.com',
@@ -38,41 +75,16 @@ export const seedDatabase = async (dataSource: DataSource) => {
 
   await Promise.all([
     queryRunner.manager.save(
-      queryRunner.manager.create(ContentType, {
-        id: '2b8fad37-ea14-4643-9580-58953c42a17a',
-        name: 'pdf',
-      }),
-    ),
-    queryRunner.manager.save(
-      queryRunner.manager.create(ContentType, {
-        id: 'ce3c1bb5-4e00-4a3b-9039-a5bd90d224be',
-        name: 'image',
-      }),
-    ),
-    queryRunner.manager.save(
-      queryRunner.manager.create(ContentType, {
-        id: '24e34bc0-8a17-4c69-aeeb-6a5095bd9fa0',
-        name: 'video',
-      }),
-    ),
-    queryRunner.manager.save(
-      queryRunner.manager.create(ContentType, {
-        id: '1a110d76-4997-4412-a3dd-ab147ca76f3b',
-        name: 'link',
-      }),
-    ),
-  ])
-
-  await Promise.all([
-    queryRunner.manager.save(
       queryRunner.manager.create(Content, {
         id: '4372ebd1-2ee8-4501-9ed5-549df46d0eb0',
         title: 'Introdução à Cultura Tech',
         description: 'Uma imagem ilustrativa sobre a cultura de trabalho em equipe.',
         url: 'http://localhost:3000/uploads/image1.jpg',
         cover: 'http://localhost:3000/uploads/image1-cover.jpg',
-        type: 'image',
+        type: createdImg.name,
         total_likes: 0,
+        format: path.extname('http://localhost:3000/uploads/image1.jpg').slice(1) || 'jpg',
+        contentType: createdImg,
         company: createdCompany1,
       }),
     ),
@@ -84,8 +96,10 @@ export const seedDatabase = async (dataSource: DataSource) => {
           'Uma imagem representando espaços colaborativos e inovação nas empresas de tecnologia.',
         url: 'http://localhost:3000/uploads/image2.png',
         cover: 'http://localhost:3000/uploads/image2-cover.jpg',
-        type: 'image',
+        type: createdImg.name,
         total_likes: 2,
+        format: path.extname('http://localhost:3000/uploads/image2.jpg').slice(1) || 'jpg',
+        contentType: createdImg,
         company: createdCompany1,
       }),
     ),
@@ -97,8 +111,10 @@ export const seedDatabase = async (dataSource: DataSource) => {
           'Um documento detalhado sobre boas práticas de programação e metodologias ágeis.',
         url: 'http://localhost:3000/uploads/pdf1.pdf',
         cover: 'http://localhost:3000/uploads/pdf1-cover.jpg',
-        type: 'pdf',
+        type: createdPdf.name,
         total_likes: 4,
+        format: 'pdf',
+        contentType: createdPdf,
         company: createdCompany1,
       }),
     ),
@@ -110,8 +126,10 @@ export const seedDatabase = async (dataSource: DataSource) => {
           'Um manual técnico abordando padrões arquiteturais e boas práticas para sistemas escaláveis.',
         url: 'http://localhost:3000/uploads/pdf2.pdf',
         cover: 'http://localhost:3000/uploads/pdf2-cover.jpg',
-        type: 'pdf',
+        type: createdPdf.name,
         total_likes: 6,
+        format: 'pdf',
+        contentType: createdPdf,
         company: createdCompany2,
       }),
     ),
@@ -123,8 +141,10 @@ export const seedDatabase = async (dataSource: DataSource) => {
           'Acesse este link para cursos e treinamentos voltados para tecnologia e inovação.',
         url: 'https://learning.rocks',
         cover: null,
-        type: 'link',
+        type: createdLink.name,
         total_likes: 8,
+        format: null,
+        contentType: createdLink,
         company: createdCompany1,
       }),
     ),
@@ -135,8 +155,10 @@ export const seedDatabase = async (dataSource: DataSource) => {
         description: null,
         url: 'http://localhost:3000/uploads/video1.mp4',
         cover: 'http://localhost:3000/uploads/video1-cover.jpg',
-        type: 'video',
+        type: createdVideo.name,
         total_likes: 10,
+        format: path.extname('http://localhost:3000/uploads/video1.mp4').slice(1) || 'mp4',
+        contentType: createdVideo,
         company: createdCompany1,
       }),
     ),

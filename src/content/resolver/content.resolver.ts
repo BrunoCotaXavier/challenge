@@ -16,4 +16,11 @@ export class ContentResolver {
     this.logger.log(`Provisioning content=${contentId} to user=${req.user.id}`)
     return this.contentService.provision(contentId)
   }
+
+  @UseGuards(AuthGuard)
+  @Query(() => [ProvisionDto])
+  async provisions() {
+    const listProvisions = await this.contentService.getAllProvisions()
+    return listProvisions
+  }
 }

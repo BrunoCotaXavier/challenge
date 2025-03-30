@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm'
 import { Company } from 'src/company/entity'
+import { ContentType } from 'src/content-types/entity'
 
 @Entity('contents')
 export class Content {
@@ -45,4 +46,8 @@ export class Content {
   @ManyToOne(() => Company, (company) => company.contents)
   @JoinColumn({ name: 'company_id' })
   company: Company
+
+  @ManyToOne(() => ContentType, { nullable: false }) // Relacionamento com ContentType
+  @JoinColumn({ name: 'type_id' })
+  contentType: ContentType
 }

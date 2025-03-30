@@ -4,6 +4,7 @@ import { User } from 'src/user/entity'
 import { Company } from 'src/company/entity'
 import { AppDataSource } from 'src/database/data-source.database'
 import { Content } from 'src/content/entity'
+import { ContentType } from 'src/content-types/entity'
 
 export const seedDatabase = async (dataSource: DataSource) => {
   const queryRunner = dataSource.createQueryRunner()
@@ -34,6 +35,33 @@ export const seedDatabase = async (dataSource: DataSource) => {
   })
 
   await Promise.all([queryRunner.manager.save(user1), queryRunner.manager.save(user2)])
+
+  await Promise.all([
+    queryRunner.manager.save(
+      queryRunner.manager.create(ContentType, {
+        id: '2b8fad37-ea14-4643-9580-58953c42a17a',
+        name: 'pdf',
+      }),
+    ),
+    queryRunner.manager.save(
+      queryRunner.manager.create(ContentType, {
+        id: 'ce3c1bb5-4e00-4a3b-9039-a5bd90d224be',
+        name: 'image',
+      }),
+    ),
+    queryRunner.manager.save(
+      queryRunner.manager.create(ContentType, {
+        id: '24e34bc0-8a17-4c69-aeeb-6a5095bd9fa0',
+        name: 'video',
+      }),
+    ),
+    queryRunner.manager.save(
+      queryRunner.manager.create(ContentType, {
+        id: '1a110d76-4997-4412-a3dd-ab147ca76f3b',
+        name: 'link',
+      }),
+    ),
+  ])
 
   await Promise.all([
     queryRunner.manager.save(

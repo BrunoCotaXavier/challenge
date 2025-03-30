@@ -7,6 +7,7 @@ import { UserModule } from 'src/user'
 import { CompanyModule } from 'src/company'
 import { ApolloDriver } from '@nestjs/apollo'
 import { ConfigModule } from '@nestjs/config'
+import { ContentTypesModule } from 'src/content-types'
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ConfigModule } from '@nestjs/config'
     ContentModule,
     UserModule,
     CompanyModule,
+    ContentTypesModule,
   ],
 })
 export class AppModule {}

@@ -21,6 +21,14 @@ export class CreateContentTypesTable1743287413839 implements MigrationInterface 
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      ALTER TABLE contents
+        DROP COLUMN types_id,
+        DROP COLUMN bytes,
+        DROP COLUMN is_embeddable,
+        DROP COLUMN allow_download,
+        DROP COLUMN format
+    `)
     await queryRunner.query('DROP TABLE content_types')
   }
 }

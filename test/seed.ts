@@ -42,16 +42,22 @@ export const seedDatabase = async (dataSource: DataSource) => {
     link_redirects: 0,
   })
 
+  const contentText = queryRunner.manager.create(ContentType, {
+    id: 'ce3c1bb5-8a17-4412-9039-6a5095bd9fa0',
+    name: 'text',
+  })
+
   const [createdCompany1, createdCompany2] = await Promise.all([
     queryRunner.manager.save(company1),
     queryRunner.manager.save(company2),
   ])
 
-  const [createdPdf, createdImg, createdVideo, createdLink] = await Promise.all([
+  const [createdPdf, createdImg, createdVideo, createdLink, createdText] = await Promise.all([
     queryRunner.manager.save(contentPdf),
     queryRunner.manager.save(contentImg),
     queryRunner.manager.save(contentVideo),
     queryRunner.manager.save(contentLink),
+    queryRunner.manager.save(contentText),
   ])
 
   const user1 = queryRunner.manager.create(User, {
@@ -159,6 +165,19 @@ export const seedDatabase = async (dataSource: DataSource) => {
         total_likes: 10,
         format: path.extname('http://localhost:3000/uploads/video1.mp4').slice(1) || 'mp4',
         contentType: createdVideo,
+        company: createdCompany1,
+      }),
+    ),
+    queryRunner.manager.save(
+      queryRunner.manager.create(Content, {
+        id: 'd060ab17-c961-4de7-929f-a0d52aa3ecf8',
+        title: 'Modulo 3 - concordância verbal - Curso de Língua Portuguesa',
+        description: null,
+        url: 'http://localhost:3000/uploads/text.txt',
+        type: createdText.name,
+        total_likes: 10,
+        format: 'txt',
+        contentType: createdText,
         company: createdCompany1,
       }),
     ),

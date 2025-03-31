@@ -40,8 +40,6 @@ export class ContentRepository {
       [contentId],
     )
 
-    console.log(content)
-
     return content || null
   }
 
